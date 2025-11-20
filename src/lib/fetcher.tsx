@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+// const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://saanj-backend-node.onrender.com/api';
 
 export async function fetcher(endpoint: string, options: AxiosRequestConfig = {}) {
   // Get the token from localStorage

@@ -74,16 +74,16 @@ export const categories: Category[] = [
       { id: "luxury-sets", name: "Luxury Gift Sets", slug: "luxury-sets" },
     ],
   },
-  {
-    id: "combo-non-leather",
-    name: "Combo Gift Set Non Leather",
-    slug: "combo-non-leather",
-    image: categoryComboNonLeather,
-    subcategories: [
-      { id: "corporate-combos", name: "Corporate Combos", slug: "corporate-combos" },
-      { id: "gift-combos", name: "Gift Combos", slug: "gift-combos" },
-    ],
-  },
+  // {
+  //   id: "combo-non-leather",
+  //   name: "Combo Gift Set Non Leather",
+  //   slug: "combo-non-leather",
+  //   image: categoryComboNonLeather,
+  //   subcategories: [
+  //     { id: "corporate-combos", name: "Corporate Combos", slug: "corporate-combos" },
+  //     { id: "gift-combos", name: "Gift Combos", slug: "gift-combos" },
+  //   ],
+  // },
   {
     id: "other-combos",
     name: "Other Combo Sets",

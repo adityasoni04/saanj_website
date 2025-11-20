@@ -29,14 +29,15 @@ export const useAuth = () => {
 
   const loginWithGoogle = () => {
     const popup = window.open(
-      'http://localhost:5000/api/auth/google',
+      'https://saanj-backend-code.onrender.com/api/auth/google',
       'google-login',
       'width=600,height=700'
     );
 
     window.addEventListener('message', (event) => {
       // Security check: ensure the message is from your backend
-      if (event.origin === 'http://localhost:5000') {
+      // if (event.origin === 'http://localhost:5000') {
+      if (event.origin === 'https://saanj-backend-code.onrender.com') {
         const { token, user } = event.data;
         if (token) {
           // 1. Set the token, which saves it to localStorage
@@ -61,6 +62,6 @@ export const useAuth = () => {
     logout,
     isLoading,
     isAuthenticated: !!user && !isError, // A convenient boolean
-    queryResult, 
+    queryResult,
   };
 };

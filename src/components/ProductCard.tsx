@@ -129,7 +129,8 @@ const ProductCard = ({ name, price, originalPrice, image1, image2, category, pro
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
           transition={{ duration: 0.3 }}
-          className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center"
+          className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] hidden lg:flex items-center justify-center"
+          // className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex items-center justify-center"
         >
           {currentQuantity === 0 ? (
             <Button

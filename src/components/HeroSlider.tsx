@@ -60,12 +60,21 @@ const HeroSlider = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  const nextSlide = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
 
   return (
     <section
-      className="relative h-screen w-full overflow-hidden bg-background cursor-pointer"
+      // Mobile: h-[75svh]
+      // Desktop: h-screen
+      className="relative h-[75svh] min-h-[550px] md:h-screen w-full overflow-hidden bg-background cursor-pointer group"
       onClick={() => navigate(slides[currentSlide].link)}
     >
       <AnimatePresence initial={false}>
@@ -77,37 +86,40 @@ const HeroSlider = () => {
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="absolute inset-0"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent md:from-black/70 md:via-black/40 z-10" />
           <img
             src={slides[currentSlide].image}
             alt={slides[currentSlide].title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
         </motion.div>
       </AnimatePresence>
 
-      <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
+      <div className="relative z-20 container mx-auto px-6 md:px-4 h-full flex items-center">
         <motion.div
           key={`content-${currentSlide}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="max-w-2xl"
+          className="max-w-2xl w-full md:w-auto"
         >
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-accent font-medium mb-4 tracking-wider text-sm"
+            className="text-accent font-medium mb-3 md:mb-4 tracking-wider text-xs md:text-sm uppercase"
           >
             PREMIUM COLLECTION
           </motion.p>
-          <h2 className="font-serif text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+          
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-4 md:mb-6 leading-tight">
             {slides[currentSlide].title}
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg">
+          
+          <p className="text-sm sm:text-lg md:text-xl text-gray-200 mb-6 md:mb-8 max-w-xs sm:max-w-lg leading-relaxed">
             {slides[currentSlide].subtitle}
           </p>
+          
           <Button
             size="lg"
             onClick={(e) => {
@@ -115,28 +127,32 @@ const HeroSlider = () => {
               navigate(slides[currentSlide].link);
             }}
             className="
- bg-gradient-to-r from-[#4A2C1F] to-[#7A583F] 
- text-white 
-shadow-xl 
-transition-all duration-300 ease-in-out 
-hover:bg-gradient-to-l 
-hover:from-[#7A583F] 
-hover:to-[#4A2C1F]
-hover:scale-[1.03] 
-hover:shadow-[0_0_20px_rgba(184,137,102,0.8)] 
-hover:shadow-2xl"
+              w-full md:w-auto
+              bg-gradient-to-r from-[#4A2C1F] to-[#7A583F] 
+              text-white 
+              shadow-xl 
+              transition-all duration-300 ease-in-out 
+              hover:bg-gradient-to-l 
+              hover:from-[#7A583F] 
+              hover:to-[#4A2C1F]
+              hover:scale-[1.03] 
+              hover:shadow-2xl"
           >
             Explore Collection
           </Button>
         </motion.div>
       </div>
 
-      <div className="absolute bottom-8 md:right-8 right-4 z-20 md:flex gap-3 hidden">
+      {/* ==========================================
+          DESKTOP BUTTONS (Bottom Right)
+          Standard Size + Accent Hover
+      ========================================== */}
+      <div className="absolute bottom-8 right-8 z-20 md:flex gap-3 hidden">
         <Button
           variant="outline"
           size="icon"
           onClick={prevSlide}
-          className="bg-background/80 backdrop-blur-sm border-border hover:bg-background"
+          className="bg-background/80 backdrop-blur-sm border-border hover:bg-accent hover:text-accent-foreground rounded-full transition-colors duration-300"
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
@@ -144,39 +160,48 @@ hover:shadow-2xl"
           variant="outline"
           size="icon"
           onClick={nextSlide}
-          className="bg-background/80 backdrop-blur-sm border-border hover:bg-background"
+          className="bg-background/80 backdrop-blur-sm border-border hover:bg-accent hover:text-accent-foreground rounded-full transition-colors duration-300"
         >
           <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
 
+      {/* ==========================================
+          MOBILE BUTTONS (Vertical Center)
+          Smaller Size (h-8 w-8) + Accent Hover
+      ========================================== */}
       <Button
         variant="outline"
         size="icon"
         onClick={prevSlide}
-        className="md:hidden absolute bottom-8 left-4 z-20 bg-background/80 backdrop-blur-sm border-border hover:bg-background"
+        className="md:hidden absolute top-1/2 -translate-y-1/2 left-2 z-20 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm border-border hover:bg-accent hover:text-accent-foreground p-0 transition-colors duration-300"
       >
-        <ChevronLeft className="h-5 w-5" />
+        <ChevronLeft className="h-4 w-4" />
       </Button>
 
       <Button
         variant="outline"
         size="icon"
         onClick={nextSlide}
-        className="md:hidden absolute bottom-8 right-4 z-20 bg-background/80 backdrop-blur-sm border-border hover:bg-background"
+        className="md:hidden absolute top-1/2 -translate-y-1/2 right-2 z-20 h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm border-border hover:bg-accent hover:text-accent-foreground p-0 transition-colors duration-300"
       >
-        <ChevronRight className="h-5 w-5" />
+        <ChevronRight className="h-4 w-4" />
       </Button>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      {/* Indicators */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`h-2 rounded-full transition-all ${index === currentSlide
-              ? "w-8 bg-accent"
-              : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentSlide(index);
+            }}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              index === currentSlide
+                ? "w-6 bg-accent"
+                : "w-1.5 bg-white/50 hover:bg-white/80"
+            }`}
           />
         ))}
       </div>

@@ -184,6 +184,13 @@ const Navbar = () => {
     { name: "Admin", href: "/admin" },
   ];
 
+  const navLinks1 = navLinks.filter(link => link.name === "Home");
+
+  const navLinks2 = navLinks.filter(link =>
+    link.name !== "Home" &&
+    (link.name !== "Admin" || (isAuthenticated && typedUser?.role === 'admin'))
+  );
+
   return (
     <>
       <motion.nav
@@ -221,30 +228,90 @@ const Navbar = () => {
             <div className="hidden md:flex items-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-auto max-w-lg"> {/* Made wider */}
               <AnimatePresence mode="wait">
                 {!isSearchOpen ? (
-                  <motion.div
-                    key="nav-links"
-                    className="flex items-center gap-8"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-                  >
-                    {navLinks.filter(l => l.name !== "Admin" || (isAuthenticated && typedUser?.role === 'admin')).map(link => (
-                      <a key={link.name} href={link.href} onClick={(e) => { e.preventDefault(); navigate(link.href); }}
-                        className={`transition-all text-sm whitespace-nowrap ${location.pathname === link.href ? "font-bold text-accent" : "font-medium text-foreground hover:text-accent"}`}
-                      > {link.name} </a>
-                    ))}
-                    <div onMouseEnter={handleCategoryEnter} onMouseLeave={handleCategoryLeave}>
-                      <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
-                        <DropdownMenuTrigger
-                          onClick={() => navigate('/all-categories')}
-                          className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-accent transition-all outline-none"
-                        >
-                          Categories <ChevronDown className="h-4 w-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-64 bg-background border-border max-h-[500px] overflow-y-auto">
-                          {categories.map(c => (<DropdownMenuSub key={c.id}> <DropdownMenuSubTrigger className="cursor-pointer">{c.name}</DropdownMenuSubTrigger> <DropdownMenuSubContent className="bg-background border-border"> <DropdownMenuItem onClick={() => navigate(`/category/${c.slug}`)} className="cursor-pointer">View All {c.name}</DropdownMenuItem> {c.subcategories?.map(s => (<DropdownMenuItem key={s.id} onClick={() => navigate(`/category/${c.slug}/${s.slug}`)} className="cursor-pointer">{s.name}</DropdownMenuItem>))} </DropdownMenuSubContent> </DropdownMenuSub>))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </motion.div>
+                 <motion.div
+  key="nav-links"
+  className="flex items-center gap-8"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.2 }}
+>
+  {/* --- GROUP 1: HOME --- */}
+  {navLinks1.map((link) => (
+    <a
+      key={link.name}
+      href={link.href}
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(link.href);
+      }}
+      className={`transition-all text-sm whitespace-nowrap ${
+        location.pathname === link.href
+          ? "font-bold text-accent"
+          : "font-medium text-foreground hover:text-accent"
+      }`}
+    >
+      {link.name}
+    </a>
+  ))}
+
+  {/* --- CATEGORIES DROPDOWN (Sandwiched in the middle) --- */}
+  <div onMouseEnter={handleCategoryEnter} onMouseLeave={handleCategoryLeave}>
+    <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
+      <DropdownMenuTrigger
+        onClick={() => navigate("/all-categories")}
+        className="flex items-center gap-1 text-sm font-medium text-foreground hover:text-accent transition-all outline-none"
+      >
+        Categories <ChevronDown className="h-4 w-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-64 bg-background border-border max-h-[500px] overflow-y-auto">
+        {categories.map((c) => (
+          <DropdownMenuSub key={c.id}>
+            <DropdownMenuSubTrigger className="cursor-pointer">
+              {c.name}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="bg-background border-border">
+              <DropdownMenuItem
+                onClick={() => navigate(`/category/${c.slug}`)}
+                className="cursor-pointer"
+              >
+                View All {c.name}
+              </DropdownMenuItem>
+              {c.subcategories?.map((s) => (
+                <DropdownMenuItem
+                  key={s.id}
+                  onClick={() => navigate(`/category/${c.slug}/${s.slug}`)}
+                  className="cursor-pointer"
+                >
+                  {s.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
+
+  {/* --- GROUP 2: ABOUT, CONTACT, ADMIN --- */}
+  {navLinks2.map((link) => (
+    <a
+      key={link.name}
+      href={link.href}
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(link.href);
+      }}
+      className={`transition-all text-sm whitespace-nowrap ${
+        location.pathname === link.href
+          ? "font-bold text-accent"
+          : "font-medium text-foreground hover:text-accent"
+      }`}
+    >
+      {link.name}
+    </a>
+  ))}
+</motion.div>
                 ) : (
                   <motion.form
                     key="search-bar-desktop"

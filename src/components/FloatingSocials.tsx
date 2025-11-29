@@ -32,7 +32,7 @@ const FloatingSocials = () => {
 
       <div className="fixed right-5 bottom-8 z-50 flex flex-col gap-5">
         {/* WhatsApp */}
-        <a
+        {/* <a
           href="https://wa.me/91YOURPHONENUMBER"
           target="_blank"
           rel="noopener noreferrer"
@@ -51,8 +51,6 @@ const FloatingSocials = () => {
           >
             <WhatsAppIcon className="h-7 w-7 drop-shadow-[0_2px_3px_rgba(0,0,0,0.5)]" />
           </div>
-
-          {/* Tooltip */}
           <span
             className="absolute right-full top-1/2 -translate-y-1/2 mr-3 
                        bg-gray-900/90 text-white text-sm font-semibold px-3 py-1.5 rounded-lg
@@ -70,7 +68,7 @@ const FloatingSocials = () => {
                           border-l-[6px] border-l-gray-900"
             />
           </span>
-        </a>
+        </a> */}
 
         {/* Instagram */}
         <a

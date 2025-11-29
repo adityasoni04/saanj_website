@@ -36,7 +36,7 @@ const Footer = () => {
                   <Instagram className="h-4 w-4" />
                 </Button>
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              {/* <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <Button
                   variant="outline"
                   size="icon"
@@ -55,7 +55,7 @@ const Footer = () => {
                 >
                   <Twitter className="h-4 w-4" />
                 </Button>
-              </a>
+              </a> */}
               {/* --- END MODIFIED BUTTONS --- */}
             </div>
           </div>

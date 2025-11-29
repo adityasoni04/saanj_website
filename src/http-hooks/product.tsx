@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { createProduct, getProducts, getAdminProducts, ProductApiResponse, updateProduct, getProductById, deleteProduct } from '@/services/product'; // Adjust path
+import { createProduct, getProducts, getAdminProducts, ProductApiResponse, getFeaturedProducts, updateProduct, getProductById, deleteProduct } from '@/services/product'; // Adjust path
 import { toast } from 'react-hot-toast'; // Or your toast library
 
 // Define the structure for specifications
@@ -140,5 +140,15 @@ export const useGetProductById = (productId?: string) => {
         // Only enable and run the query if a valid productId is provided
         enabled: !!productId,
 
+    });
+};
+
+export const useGetFeaturedProducts = () => {
+    return useQuery<
+        BackendProduct[],
+        Error
+    >({
+        queryKey: ['products', 'featured'],
+        queryFn: getFeaturedProducts,
     });
 };

@@ -12,9 +12,9 @@ export const createProduct = async (productFormData: any) => {
     return fetcher('/products', {
         method: 'POST',
         data: productFormData,
-        headers: {
-            'Content-Type': undefined,
-        },
+        // headers: {
+        //     'Content-Type': undefined,
+        // },
     });
 };
 
@@ -62,9 +62,9 @@ export const updateProduct = async (productId: string, productUpdateData: FormDa
     return fetcher(`/products/${productId}`, {
         method: 'PUT',
         data: productUpdateData,
-        headers: {
-            'Content-Type': undefined,
-        },
+        // headers: {
+        //     'Content-Type': undefined,
+        // },
     });
 };
 
@@ -79,6 +79,12 @@ export const getProductById = async (productId: string) => {
         throw new Error("Product ID is required to fetch product details.");
     }
     return fetcher(`/products/${productId}`, {
+        method: 'GET',
+    });
+};
+
+export const getFeaturedProducts = async () => {
+    return fetcher('/products/featured', { 
         method: 'GET',
     });
 };

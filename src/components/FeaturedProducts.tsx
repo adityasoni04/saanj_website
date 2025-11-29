@@ -8,6 +8,7 @@ import productTote1 from "@/assets/product-tote-1.jpg";
 import productTote2 from "@/assets/product-tote-2.jpg";
 import productLaptop1 from "@/assets/product-laptop-1.jpg";
 import productLaptop2 from "@/assets/product-laptop-2.jpg";
+import { useGetFeaturedProducts } from "@/http-hooks/product";
 
 const featuredProducts = [
   {
@@ -45,6 +46,28 @@ const featuredProducts = [
 ];
 
 const FeaturedProducts = () => {
+  // 2. Fetch data from backend
+  const { data: products, isLoading, isError, error } = useGetFeaturedProducts();
+
+  const renderSkeletons = () => {
+    return [...Array(4)].map((_, index) => (
+      <div key={index} className="flex flex-col gap-4 w-full">
+        <div className="w-full h-[300px] bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+        <div className="flex flex-col gap-2">
+          <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+          <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+        </div>
+      </div>
+    ));
+  };
+
+  if (isError) {
+    return (
+      <section className="pt-6 pb-6 bg-background text-center text-red-500">
+        <p>Unable to load collection. {error instanceof Error ? error.message : "Unknown error"}</p>
+      </section>
+    );
+  }
   return (
     <section className="pt-6 pb-6 lg:pt-8 lg:pb-8 bg-background">
       <div className="px-4">
@@ -63,10 +86,32 @@ const FeaturedProducts = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.productId} {...product} />
-          ))}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
+          {/* 5. Conditional Rendering: Skeleton OR Real Data */}
+          {isLoading ? (
+            renderSkeletons()
+          ) : (
+            products?.map((product) => (
+              <ProductCard
+                key={product._id}
+                // --- FIX 1: Map Name ---
+                // Backend has 'productName', Component wants 'name'
+                name={product.productName}
+
+                // --- FIX 2: Map Images ---
+                // Backend likely has an array called 'images'. 
+                // We take the first item for image1, and second for image2.
+                image1={product.images?.[0] || ""}
+                image2={product.images?.[1] || product.images?.[0] || ""}
+
+                // --- Pass remaining matching props ---
+                price={product.price}
+                category={product.category}
+                productId={product.productId}
+              />
+            ))
+          )}
+
         </div>
       </div>
     </section>

@@ -37,7 +37,7 @@ interface BackendProduct {
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>()
   const { toast } = useToast()
-  const { addToCart, items: cartItems, updateQuantity, isMutating: isCartMutating } = useCart() // updated
+  const { addToCart, items: cartItems, updateQuantity, isMutating: isCartMutating } = useCart()
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
@@ -55,7 +55,7 @@ const ProductDetail = () => {
   const cartItem = useMemo(() => {
     if (!product || !cartItems) return null
     return cartItems.find((item) => item.productId === product.productId)
-  }, [cartItems, product]) // updated
+  }, [cartItems, product])
 
   const isInCart = !!cartItem
   const cartQuantity = cartItem?.quantity || 0
@@ -63,7 +63,7 @@ const ProductDetail = () => {
   const isWishlisted = useMemo(() => {
     if (!product || !wishlist?.items) return false
     return wishlist.items.some((item) => item.productId === product.productId)
-  }, [wishlist, product]) // updated
+  }, [wishlist, product])
 
   // --- Effects ---
   useEffect(() => {
@@ -140,17 +140,17 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="pt-20 md:pt-24 pb-16 flex-grow">
+    <div className="min-h-screen flex flex-col bg-background">
+      <main className="pt-20 md:pt-24 pb-20 flex-grow">
         {/* Breadcrumb */}
-        <div className="container mx-auto px-4 mb-1 md:mb-2">
-          <div className="flex flex-wrap items-center gap-1 md:gap-2 text-xs md:text-xs text-muted-foreground">
+        <div className="container mx-auto px-4 md:px-8 pb-4 md:pb-6">
+          <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-muted-foreground">
             <Link to="/" className="hover:text-accent transition-colors whitespace-nowrap">
               Home
             </Link>
             {categoryInfo && (
               <>
-                <ChevronRight className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
                 <Link
                   to={`/category/${categoryInfo.slug}`}
                   className="hover:text-accent transition-colors whitespace-nowrap"
@@ -159,45 +159,56 @@ const ProductDetail = () => {
                 </Link>
               </>
             )}
-            <ChevronRight className="h-3 w-3 md:h-3.5 md:w-3.5" />
-            <span className="text-foreground font-medium whitespace-nowrap text-xs">{product.productName}</span>
+            <ChevronRight className="h-3 w-3 md:h-4 md:w-4" />
+            <span className="text-foreground font-medium whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px]">
+              {product.productName}
+            </span>
           </div>
         </div>
 
         {/* Product Grid */}
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-2 md:gap-3 lg:gap-4">
-            {/* IMAGE GALLERY */}
-            <div className="lg:col-span-3 flex flex-col">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
+
+            {/* --- LEFT: IMAGE GALLERY --- */}
+            <div className="flex flex-col gap-4 w-full">
+              {/* Main Image Container */}
               <motion.div
                 key={selectedImage}
                 initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.2 }}
-                className="h-48 md:h-64 lg:h-80 bg-muted rounded-lg overflow-hidden shadow-lg mb-2 md:mb-3 flex items-center justify-center"
+                transition={{ duration: 0.3 }}
+                className="relative w-full rounded-xl overflow-hidden bg-white border border-border/50 shadow-sm
+                           h-[380px] sm:h-[450px] lg:h-[600px] flex items-center justify-center"
               >
                 <img
                   src={product.images?.[selectedImage] || "/placeholder.png"}
                   alt={product.productName}
-                  className="max-h-full max-w-full object-contain p-2 md:p-3 transition-transform duration-300 hover:scale-105"
+                  // p-1 ensures inner image is large as requested
+                  className="w-full h-full object-contain p-1 transition-transform duration-500 hover:scale-110 cursor-zoom-in"
                   onError={(e) => {
                     ; (e.target as HTMLImageElement).src = "/placeholder.png"
                   }}
                 />
               </motion.div>
 
+              {/* Thumbnails */}
               {product.images?.length > 1 && (
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-1 md:gap-2 mt-1 md:mt-2">
+                <div className="grid grid-cols-5 gap-3 md:gap-4 overflow-x-auto pb-2">
                   {product.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`h-12 md:h-16 rounded-lg overflow-hidden border-2 bg-muted flex items-center justify-center transition-all duration-200 ${selectedImage === index ? "border-accent shadow-md scale-105" : "border-border hover:border-accent/50"}`}
+                      className={`relative aspect-square rounded-lg overflow-hidden border-2 bg-white transition-all duration-200 
+                        ${selectedImage === index
+                          ? "border-accent ring-2 ring-accent/20 ring-offset-2"
+                          : "border-transparent hover:border-accent/50"
+                        }`}
                     >
                       <img
                         src={image || "/placeholder.png"}
-                        alt={`${product.productName} thumbnail ${index + 1}`}
-                        className="max-h-full max-w-full object-contain p-1"
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-contain p-1"
                         onError={(e) => {
                           ; (e.target as HTMLImageElement).src = "/placeholder.png"
                         }}
@@ -208,179 +219,210 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {/* PRODUCT INFO */}
-            <div className="lg:col-span-2">
+            {/* --- RIGHT: PRODUCT INFO --- */}
+            <div className="flex flex-col lg:sticky lg:top-32 lg:py-2">
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="lg:sticky lg:top-28"
+                className="space-y-4 md:space-y-6 lg:space-y-7"
               >
-                <h1 className="font-serif text-base md:text-lg lg:text-xl font-bold text-primary mb-1 md:mb-2">
-                  {product.productName}
-                </h1>
+                {/* Header Info */}
+                <div className="space-y-3 md:space-y-4">
+                  {/* FONT SIZE ADJUSTMENT: Reduced from text-5xl to text-3xl for better desktop balance */}
+                  <h1 className="font-serif text-2xl md:text-3xl lg:text-3xl font-bold text-primary leading-tight">
+                    {product.productName}
+                  </h1>
 
-                <div className="flex items-baseline gap-1 md:gap-2 mb-2 md:mb-3 pb-2 md:pb-3 border-b border-border">
-                  <span className="text-lg md:text-xl font-bold text-accent">
-                    ₹{product.price.toLocaleString("en-IN")}
-                  </span>
-                  {product.originalPrice && product.originalPrice > product.price && (
-                    <span className="text-xs md:text-sm text-muted-foreground line-through">
-                      ₹{product.originalPrice.toLocaleString("en-IN")}
+                  <div className="flex items-baseline gap-2 md:gap-3 pb-4 border-b border-border flex-wrap">
+                    <span className="text-xl md:text-2xl lg:text-3xl font-bold text-accent">
+                      ₹{product.price.toLocaleString("en-IN")}
                     </span>
-                  )}
-                  <span className="text-xs text-muted-foreground">Incl. taxes</span>
+
+                    {product.originalPrice && product.originalPrice > product.price && (
+                      <>
+                        <span className="text-sm md:text-lg text-muted-foreground line-through">
+                          ₹{product.originalPrice.toLocaleString("en-IN")}
+                        </span>
+                        <span className="text-xs md:text-sm font-medium text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                          {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                        </span>
+                      </>
+                    )}
+
+                    <span className="text-xs text-muted-foreground ml-1">
+                      Incl. taxes
+                    </span>
+                  </div>
                 </div>
 
-                <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3 leading-relaxed">
-                  {product.description}
-                </p>
+                {/* Description */}
+                <div className="prose prose-sm text-muted-foreground">
+                  <p className="leading-relaxed text-sm md:text-base">
+                    {product.description}
+                  </p>
+                </div>
 
+                {/* Features Highlights (FIXED ALIGNMENT) */}
                 {product.features?.length > 0 && (
-                  <div className="mb-2 md:mb-3">
-                    <h3 className="font-semibold text-sm md:text-base mb-1 md:mb-2">Key Features</h3>
-                    <div className="space-y-0.5 md:space-y-1">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-sm text-foreground uppercase tracking-wide">Highlights</h3>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4">
                       {product.features.map((feature, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-1 md:gap-2 text-xs md:text-sm leading-relaxed"
-                        >
-                          <span className="text-accent font-bold">•</span>
-                          <span className="text-muted-foreground">{feature}</span>
-                        </div>
+                        <li key={index} className="flex items-start gap-2.5 text-xs md:text-sm text-muted-foreground">
+                          {/* FIX: Use a CSS circle instead of text bullet for perfect alignment */}
+                          <div className="h-1.5 w-1.5 rounded-full bg-accent shrink-0 mt-[0.5rem]" />
+                          <span className="leading-relaxed">{feature}</span>
+                        </li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
                 )}
 
+                {/* Specifications Section (ADDED) */}
                 {product.specifications?.length > 0 && (
-                  <div className="mb-2 md:mb-3">
-                    <h3 className="font-semibold text-sm md:text-base mb-1 md:mb-2">Specifications</h3>
-                    <div className="space-y-0.5 md:space-y-1">
+                  <div className="pt-4 mt-4 border-t border-border/50">
+                    <h3 className="font-semibold text-sm text-foreground uppercase tracking-wide mb-3">
+                      Specifications
+                    </h3>
+                    <div className="grid grid-cols-1 gap-y-3">
                       {product.specifications.map((spec, index) => (
-                        <div key={index} className="flex justify-between py-0.5 md:py-1 border-b border-border text-xs">
-                          <span className="text-muted-foreground">{spec.label}</span>
-                          <span className="font-medium text-right">{spec.value}</span>
+                        <div key={index} className="grid grid-cols-3 gap-4 text-xs md:text-sm">
+                          <span className="text-muted-foreground font-medium">{spec.label}</span>
+                          <span className="col-span-2 text-foreground">{spec.value}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {isInCart ? (
-                  <div className="mb-1 md:mb-2">
-                    <Label className="block text-xs font-semibold mb-1 md:mb-2">Quantity in Cart</Label>
-                    <div className="flex items-center gap-1 md:gap-2 bg-secondary/30 rounded-lg p-1 w-fit">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleDecreaseCartQty}
-                        disabled={isCartMutating || cartQuantity <= 1}
-                        className="hover:bg-background h-6 w-6 md:h-7 md:w-7"
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                      </Button>
-                      <span className="text-base md:text-lg font-semibold w-8 md:w-10 text-center select-none">
-                        {cartQuantity}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleIncreaseCartQty}
-                        disabled={isCartMutating}
-                        className="hover:bg-background h-6 w-6 md:h-7 md:w-7"
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                      </Button>
+                {/* Actions Area - STRUCTURED LIKE MOBILE CODE */}
+                <div className="pt-2 flex flex-col gap-4">
+                  {isInCart ? (
+                    <div className="mb-1 md:mb-2">
+                      <Label className="block text-xs font-semibold mb-2">Quantity in Cart</Label>
+                      {/* Original Style Counter */}
+                      <div className="flex items-center gap-1 md:gap-2 bg-secondary/30 rounded-lg p-1 w-fit mb-4">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={handleDecreaseCartQty}
+                          disabled={isCartMutating || cartQuantity <= 1}
+                          className="hover:bg-accent/10 hover:text-accent h-8 w-8 md:h-9 md:w-9"
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus className="h-3 w-3 md:h-4 md:w-4" />
+                        </Button>
+                        <span className="text-base md:text-lg font-semibold w-8 md:w-10 text-center select-none tabular-nums">
+                          {cartQuantity}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={handleIncreaseCartQty}
+                          disabled={isCartMutating}
+                          className="hover:bg-accent/10 hover:text-accent h-8 w-8 md:h-9 md:w-9"
+                          aria-label="Increase quantity"
+                        >
+                          <Plus className="h-3 w-3 md:h-4 md:w-4" />
+                        </Button>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Link to="/cart">
+                          <Button
+                            size="lg"
+                            variant="secondary"
+                            className="w-full text-sm md:text-base py-3 md:py-6 font-semibold hover:bg-accent hover:text-accent-foreground shadow-sm"
+                          >
+                            ✓ In Cart - Go to Cart
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-1 md:gap-2 mt-1 md:mt-2">
-                      <Link to="/cart">
+                  ) : (
+                    <div className="mb-1 md:mb-2">
+                      <Label className="block text-xs font-semibold mb-2">Quantity</Label>
+                      {/* Original Style Counter */}
+                      <div className="flex items-center gap-1 md:gap-2 bg-secondary/30 rounded-lg p-1 w-fit mb-4">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                          className="hover:bg-accent/10 hover:text-accent h-8 w-8 md:h-9 md:w-9"
+                          aria-label="Decrease quantity"
+                        >
+                          <Minus className="h-3 w-3 md:h-4 md:w-4" />
+                        </Button>
+                        <span className="text-base md:text-lg font-semibold w-8 md:w-10 text-center select-none tabular-nums">
+                          {quantity}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setQuantity(quantity + 1)}
+                          className="hover:bg-accent/10 hover:text-accent h-8 w-8 md:h-9 md:w-9"
+                          aria-label="Increase quantity"
+                        >
+                          <Plus className="h-3 w-3 md:h-4 md:w-4" />
+                        </Button>
+                      </div>
+                      <div className="flex flex-col gap-2">
                         <Button
                           size="lg"
-                          variant="secondary"
-                          className="w-full text-xs md:text-sm py-2 md:py-3 font-semibold hover:bg-accent hover:text-accent-foreground"
+                          className="w-full text-sm md:text-base py-3 md:py-6 shadow-md"
+                          onClick={handleAddToCart}
                         >
-                          ✓ In Cart - Go to Cart
+                          <ShoppingCart className="mr-2 h-4 w-4 md:h-5 md:w-5" /> Add to Cart
                         </Button>
-                      </Link>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="mb-1 md:mb-2">
-                    <Label className="block text-xs font-semibold mb-1 md:mb-2">Quantity</Label>
-                    <div className="flex items-center gap-1 md:gap-2 bg-secondary/30 rounded-lg p-1 w-fit">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="hover:bg-background h-6 w-6 md:h-7 md:w-7"
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                      </Button>
-                      <span className="text-base md:text-lg font-semibold w-8 md:w-10 text-center select-none">
-                        {quantity}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="hover:bg-background h-6 w-6 md:h-7 md:w-7"
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                      </Button>
-                    </div>
-                    <div className="flex flex-col gap-1 md:gap-2 mt-1 md:mt-2">
-                      <Button size="lg" className="w-full text-xs md:text-sm py-2 md:py-3" onClick={handleAddToCart}>
-                        <ShoppingCart className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" /> Add to Cart
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                  )}
 
-                <div className="flex flex-col gap-1 md:gap-2">
-                  <Button
-                    variant="outline"
-                    className="w-full text-xs md:text-sm py-2 md:py-3 bg-transparent"
-                    onClick={handleWishlistToggle}
-                    disabled={isMutatingWishlist}
-                  >
-                    {isMutatingWishlist ? (
-                      <Loader2 className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 animate-spin" />
-                    ) : (
-                      <Heart
-                        className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4"
-                        fill={isWishlisted ? "#ef4444" : "none"}
-                        color={isWishlisted ? "#ef4444" : "currentColor"}
-                      />
-                    )}
-                    {isAddingToWishlist
-                      ? "Adding..."
-                      : isRemovingFromWishlist
-                        ? "Removing..."
-                        : isWishlisted
-                          ? "In Wishlist"
-                          : "Add to Wishlist"}
-                  </Button>
+                  {/* Wishlist Button - Original Style */}
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      className="w-full text-xs md:text-sm py-3 md:py-6 bg-transparent border-solid border-border"
+                      onClick={handleWishlistToggle}
+                      disabled={isMutatingWishlist}
+                    >
+                      {isMutatingWishlist ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Heart
+                          className="mr-2 h-4 w-4"
+                          fill={isWishlisted ? "#ef4444" : "none"}
+                          color={isWishlisted ? "#ef4444" : "currentColor"}
+                        />
+                      )}
+                      {isAddingToWishlist
+                        ? "Adding..."
+                        : isRemovingFromWishlist
+                          ? "Removing..."
+                          : isWishlisted
+                            ? "In Wishlist"
+                            : "Add to Wishlist"}
+                    </Button>
+                  </div>
                 </div>
 
-                <div className="mt-2 md:mt-3 pt-2 md:pt-3 border-t border-border space-y-1.5 md:space-y-2 text-sm md:text-base">
-                  <div className="flex items-center gap-1 md:gap-2 text-muted-foreground font-medium">
-                    <span className="text-accent text-lg md:text-xl">✓</span>
-                    <span>Free shipping</span>
-                  </div>
-                  <div className="flex items-center gap-1 md:gap-2 text-muted-foreground font-medium">
-                    <span className="text-accent text-lg md:text-xl">✓</span>
-                    <span>100% Genuine</span>
-                  </div>
-                  <div className="flex items-center gap-1 md:gap-2 text-muted-foreground font-medium">
-                    <span className="text-accent text-lg md:text-xl">✓</span>
-                    <span>7-days Exchange</span>
-                  </div>
+                {/* Trust Badges - Cards Layout (Requested) */}
+                <div className="grid grid-cols-3 gap-2 pt-4 border-t border-border mt-2">
+                  {[
+                    { text: "Free shipping", icon: true },
+                    { text: "100% Genuine", icon: true },
+                    { text: "7-days Exchange", icon: true },
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex flex-col items-center justify-center p-3 text-center bg-secondary/10 rounded-lg border border-border/50 h-full"
+                    >
+                      <span className="text-accent text-lg font-bold mb-1">✓</span>
+                      <span className="text-[10px] md:text-xs font-medium text-foreground leading-tight">{item.text}</span>
+                    </div>
+                  ))}
                 </div>
+
               </motion.div>
             </div>
           </div>

@@ -149,7 +149,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                     quantity
                 }];
             });
-            sonnerToast.success("Item added to cart!");
+            // sonnerToast.success("Item added to cart!");
         }
     };
 

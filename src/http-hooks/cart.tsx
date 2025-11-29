@@ -7,7 +7,7 @@ import {
     clearCart,
     Cart,
 } from '@/services/cart'; // Adjust path as needed
-import { toast } from 'react-hot-toast'; // Or your toast library
+import { toast } from 'sonner'; // Or your toast library
 import { useAuth } from "@/http-hooks/auth";
 
 export const useGetCart = () => {
@@ -28,8 +28,8 @@ export const useAddToCart = () => {
     >({
         mutationFn: ({ productId, quantity }) => addToCart(productId, quantity),
         onSuccess: (updatedCart) => {
-            // FIX: Update the correct query key
             queryClient.setQueryData(['cart'], updatedCart);
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
             toast.success("Item added to cart!");
         },
         onError: (error: Error) => {
@@ -52,6 +52,7 @@ export const useUpdateCartItemQuantity = () => {
         onSuccess: (updatedCart) => {
             // FIX: Update the correct query key
             queryClient.setQueryData(['cart'], updatedCart);
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
             toast.success("Cart updated.");
         },
         onError: (error: Error) => {
@@ -72,8 +73,8 @@ export const useRemoveFromCart = () => {
     >({
         mutationFn: (productId) => removeFromCart(productId),
         onSuccess: (updatedCart) => {
-            // FIX: Update the correct query key
             queryClient.setQueryData(['cart'], updatedCart);
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
             toast.success("Item removed from cart.");
         },
         onError: (error: Error) => {
@@ -90,8 +91,8 @@ export const useClearCart = () => {
     return useMutation<Cart, Error, void>({
         mutationFn: clearCart,
         onSuccess: (updatedCart) => {
-            // FIX: Update the correct query key
             queryClient.setQueryData(['cart'], updatedCart);
+            queryClient.invalidateQueries({ queryKey: ['cart'] });
             toast.success("Cart cleared.");
         },
         onError: (error: Error) => {

@@ -168,15 +168,15 @@ export const categories: Category[] = [
     //   { id: "spiritual-gifts", name: "Spiritual Gifts", slug: "spiritual-gifts" },
     // ],
   },
-  {
-    id: "promotional-keychains",
-    name: "Keychains",
-    slug: "promotional-keychains",
-    image: categoryPromotionalKeychains,
-    // subcategories: [
-    //   { id: "metal-keychains", name: "Metal Keychains", slug: "metal-keychains" },
-    //   { id: "leather-keychains", name: "Leather Keychains", slug: "leather-keychains" },
-    //   { id: "custom-keychains", name: "Custom Keychains", slug: "custom-keychains" },
-    // ],
-  },
+  // {
+  //   id: "promotional-keychains",
+  //   name: "Keychains",
+  //   slug: "promotional-keychains",
+  //   image: categoryPromotionalKeychains,
+  //   subcategories: [
+  //     { id: "metal-keychains", name: "Metal Keychains", slug: "metal-keychains" },
+  //     { id: "leather-keychains", name: "Leather Keychains", slug: "leather-keychains" },
+  //     { id: "custom-keychains", name: "Custom Keychains", slug: "custom-keychains" },
+  //   ],
+  // },
 ];
